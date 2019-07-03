@@ -2,7 +2,7 @@ package voxel.game;
 
 import org.lwjgl.glfw.GLFW;
 
-import voxel.engine.renderer.Renderer;
+import voxel.engine.render.Renderer;
 import voxel.gui.Window;
 
 public class Game {
@@ -12,7 +12,6 @@ public class Game {
 
 	public Game() {
 		this.window = new Window("Voxel Engine", 1600, 900, GLFW.GLFW_TRUE, GLFW.GLFW_FALSE);
-		this.renderer = new Renderer();
 	}
 	
 	public Window getWindow() {
@@ -21,5 +20,9 @@ public class Game {
 	
 	public Renderer getRenderer() {
 		return this.renderer;
+	}
+	
+	public void setRenderer(Renderer renderer) {
+		this.renderer = renderer;
 	}
 }

@@ -7,14 +7,14 @@ import static org.lwjgl.opengl.GL20.*;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 
-import voxel.engine.renderer.Renderer;
+import voxel.engine.render.Renderer;
 
-public class RendererManager {
+public abstract class RendererManager {
 	
 	public static void enable(Renderer renderer, float[] vertices) {
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		
+		glEnable(GL11.GL_DEPTH_TEST);
 		renderer.setVbo(glGenBuffers());
 		glBindBuffer(GL_ARRAY_BUFFER, renderer.getVbo());
 		//glBufferData(GL_ARRAY_BUFFER, vertices.length, vertices, GL_STATIC_DRAW);

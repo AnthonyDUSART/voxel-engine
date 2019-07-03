@@ -52,6 +52,10 @@ public abstract class WindowManager {
 		return window.getContext();
 	}
 	
+	public static void init() {
+		GL11.glClearColor(0, 0, 0.2f, 0);
+	}
+	
 	public static void destroy(Window window) {
 		glfwDestroyWindow(window.getContext());
 	}
