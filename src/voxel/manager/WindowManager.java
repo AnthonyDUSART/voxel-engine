@@ -4,6 +4,7 @@ import voxel.gui.Window;
 import org.lwjgl.glfw.*;
 import java.nio.IntBuffer;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.glfw.GLFW.*;
