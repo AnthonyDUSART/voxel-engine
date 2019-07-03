@@ -2,8 +2,8 @@
 
 in vec4 pass_position;
 
-out vec3 color;
+out vec4 color;
 
 void main(void){
-	color = vec3(1, 1, 1) * pass_position.xyw;
+	color = vec4(1, 1, 1, 0.4) * pass_position.xyzw;
 }

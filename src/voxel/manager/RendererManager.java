@@ -15,6 +15,8 @@ public abstract class RendererManager {
 	public static void enable(Renderer renderer, float[] vertices) {
 		
 		glEnable(GL11.GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		renderer.setVbo(glGenBuffers());
 		glBindBuffer(GL_ARRAY_BUFFER, renderer.getVbo());
 		//glBufferData(GL_ARRAY_BUFFER, vertices.length, vertices, GL_STATIC_DRAW);
