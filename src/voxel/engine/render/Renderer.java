@@ -5,6 +5,8 @@ import voxel.engine.render.shader.Shader;
 public class Renderer {
 	
 	private int vbo;
+	private int cbo;
+	
 	private Shader shader;
 	private Camera camera;
 	
@@ -19,6 +21,14 @@ public class Renderer {
 	
 	public void setVbo(int vbo) {
 		this.vbo = vbo;
+	}
+	
+	public int getCbo() {
+		return this.cbo;
+	}
+	
+	public void setCbo(int cbo) {
+		this.cbo = cbo;
 	}
 	
 	public Shader getShader() {

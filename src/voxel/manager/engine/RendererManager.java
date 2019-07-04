@@ -1,6 +1,5 @@
 package voxel.manager.engine;
 
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -15,8 +14,6 @@ import voxel.engine.render.Camera;
 import voxel.engine.render.Renderer;
 import voxel.engine.render.shader.StaticShader;
 import voxel.entity.Entity;
-import voxel.main.Main;
-import voxel.manager.WindowManager;
 
 public abstract class RendererManager {
 	
@@ -42,9 +39,13 @@ public abstract class RendererManager {
 		glEnable(GL_BLEND);
 		glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		renderer.setCbo(glGenBuffers());
+		glBindBuffer(GL_ARRAY_BUFFER, renderer.getCbo());
+		glBufferData(GL_ARRAY_BUFFER, entity.getColor(), GL_STATIC_DRAW);
+		
 		renderer.setVbo(glGenBuffers());
 		glBindBuffer(GL_ARRAY_BUFFER, renderer.getVbo());
-//		glBufferData(GL_ARRAY_BUFFER, vertices.length, vertices, GL_STATIC_DRAW);
 		glBufferData(GL_ARRAY_BUFFER, entity.getVertices(), GL_STATIC_DRAW);
 	}
 	
@@ -64,8 +65,13 @@ public abstract class RendererManager {
 		
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		
 		glBindBuffer(GL_ARRAY_BUFFER, renderer.getVbo());
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, FloatBuffer.allocate(0));
+		
+		glBindBuffer(GL_ARRAY_BUFFER, renderer.getCbo());
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, FloatBuffer.allocate(0));
 		
 		
 		
@@ -76,6 +82,7 @@ public abstract class RendererManager {
 	
 	public static void disable(Renderer renderer) {
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 	}
 	
 	public static Matrix4f createTransformation(Vector3f translation, Vector3f rotation, float scale) {

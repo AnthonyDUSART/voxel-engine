@@ -5,15 +5,17 @@ import org.joml.Vector3f;
 public class Entity {
 	
 	private float[] vertices;
+	private float[] color;
 	private Vector3f position;
 	private Vector3f rotation;
 	
-	public Entity(float[] vertices) {
-		this(vertices, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
+	public Entity(float[] vertices, float[] color) {
+		this(vertices, color, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
 	}
 	
-	public Entity(float[] vertices, Vector3f position, Vector3f rotation) {
+	public Entity(float[] vertices, float[] color, Vector3f position, Vector3f rotation) {
 		this.vertices = vertices;
+		this.color = color;
 		this.position = position;
 		this.rotation = rotation;
 	}
@@ -32,6 +34,10 @@ public class Entity {
 	
 	public void setVertices(float[] vertices) {
 		this.vertices = vertices;
+	}
+	
+	public float[] getColor() {
+		return this.color;
 	}
 	
 	public Vector3f getPosition() {

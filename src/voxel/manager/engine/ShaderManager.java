@@ -3,7 +3,6 @@ package voxel.manager.engine;
 import java.io.FileNotFoundException;
 
 import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -75,15 +74,13 @@ public abstract class ShaderManager {
 	
 	private static void bindAttributes(StaticShader shader) {
 		ShaderManager.bindAttribute(shader, 0, "i_position");
+		ShaderManager.bindAttribute(shader, 2, "i_color");
 	}
 	
 	private static void setUniformsLocation(StaticShader shader) {
 		shader.setPerspectiveProjectionLocation(glGetUniformLocation(shader.getProgramId(), "u_projection"));
-		System.out.println(glGetUniformLocation(shader.getProgramId(), "u_projection"));
 		shader.setTransformationLocation(glGetUniformLocation(shader.getProgramId(), "u_transformation"));
-		System.out.println(glGetUniformLocation(shader.getProgramId(), "u_transformation"));
 		shader.setViewLocation(glGetUniformLocation(shader.getProgramId(), "u_view"));
-		System.out.println(glGetUniformLocation(shader.getProgramId(), "u_view"));
 	}
 	
 	private static void loadMatrix4f(int location, Matrix4f m) {

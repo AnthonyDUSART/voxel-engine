@@ -7,8 +7,6 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
 
 import voxel.engine.render.Camera;
 import voxel.main.Main;
@@ -35,7 +33,12 @@ public abstract class CameraManager {
 			
 			@Override
 			public void invoke(long arg0, double arg1, double arg2) {
-				camera.setTarget(new Vector3f(-((float)arg1 * Camera.getTargetSpeed()), -((float)arg2 * Camera.getTargetSpeed()), 0));
+				camera.setTarget(
+						new Vector3f(
+								(float)Math.sin(arg1 * Camera.getTargetSpeed()), 
+								-(float)Math.cos(arg1 * Camera.getTargetSpeed()), 
+								0)
+						);
 				System.out.println(camera.getTarget());
 			}
 		};

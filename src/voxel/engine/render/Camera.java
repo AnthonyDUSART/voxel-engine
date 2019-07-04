@@ -15,7 +15,7 @@ public class Camera {
 	private static float targetSpeed;
 	
 	public Camera(float zNear, float zFar) {
-		this(new Vector3f(0, 0, -5), new Vector3f(0, 0, 0), 0, 0, 0, zNear, zFar, 70);
+		this(new Vector3f(4, 3, -3), new Vector3f(0, 0, 0), 0, 0, 0, zNear, zFar, 70);
 	}
 	
 	public Camera(Vector3f position, Vector3f target, float pitch, float yaw, float roll, float zNear, float zFar, float fov) {
