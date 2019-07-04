@@ -49,13 +49,15 @@ public class Camera {
 	}
 	
 	public Vector2f increaseOrientation(float x, float y) {
-		this.pitch += x * mouseSpeed;
-		this.yaw += y * mouseSpeed;
+		this.pitch -= x * mouseSpeed;
+		this.yaw -= y * mouseSpeed;
 		
-		if(this.pitch > 90)
-			this.pitch = 90;
-		else if(this.pitch < -90)
-			this.pitch = -90;
+		if(this.yaw > 90)
+			this.yaw = 90;
+		else if(this.yaw < -90)
+			this.yaw = -90;
+		
+		System.out.println("pitch:" + this.pitch + ", yaw:" + this.yaw);
 		
 		return new Vector2f(this.pitch, this.yaw);
 	}
@@ -66,22 +68,6 @@ public class Camera {
 	
 	public void setPosition(Vector3f position) {
 		this.position = position;
-	}
-	
-	public Vector2f getOrientation() {
-		return this.orientation;
-	}
-	
-	public void setOrientation(Vector2f orientation) {
-		this.orientation = orientation;
-	}
-	
-	public Vector3f getTarget() {
-		return this.target;
-	}
-	
-	public void setTarget(Vector3f target) {
-		this.target = target;
 	}
 	
 	public float getZNear() {
