@@ -43,16 +43,21 @@ public abstract class WindowManager {
 				(vidmode.width() - pWidth.get(0)) / 2,
 				(vidmode.height() - pHeight.get(0)) / 2
 			);
+			
 		}
 
 		glfwMakeContextCurrent(context);
 		glfwSwapInterval(1);
 		
+		
 		// inputs
-		glfwSetInputMode(window.getContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		
 		glfwSetFramebufferSizeCallback(context, WindowManager.onResize());
 		
 		glfwShowWindow(context);
+		
+		glfwSetCursorPos(context, window.getWidth()/2, window.getHeight()/2);
+		glfwSetInputMode(window.getContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		
 		return window.getContext();
 	}
@@ -67,7 +72,7 @@ public abstract class WindowManager {
 		};
 	}
 	
-	public static GLFWKeyCallback input() {
+	public static GLFWKeyCallback input(Window window) {
 		
 		
 		return new GLFWKeyCallback() {
@@ -77,10 +82,14 @@ public abstract class WindowManager {
 				
 				if(arg1 == GLFW_KEY_ESCAPE && arg3 == GLFW_RELEASE) {
 					System.out.println("key callback " + arg0 + " " + GLFW_CURSOR + " " + GLFW_CURSOR_DISABLED);
-					if(glfwGetInputMode(arg0, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+					if(glfwGetInputMode(arg0, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
+						window.setIsPaused(true);
 						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-					else
+					}
+					else {
+						window.setIsPaused(false);
 						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+					}
 				}
 			}
 		};

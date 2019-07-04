@@ -20,7 +20,7 @@ public abstract class RendererManager {
 	public static Renderer create() {
 		return new Renderer(
 			ShaderManager.getStaticShader("static"),
-			new Camera(0.1f, 100.0f)
+			new Camera(0.1f, 1000.0f)
 		);
 	}
 	
@@ -35,7 +35,8 @@ public abstract class RendererManager {
 		glUseProgram(0);
 		
 		
-		glEnable(GL11.GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_MODELVIEW);
 		glEnable(GL_BLEND);
 		glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

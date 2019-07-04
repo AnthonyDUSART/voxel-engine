@@ -10,6 +10,8 @@ import org.lwjgl.opengl.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
+import org.joml.Vector3f;
+
 public abstract class GameManager {
 	
 	public static void init(Game game) {
@@ -26,8 +28,8 @@ public abstract class GameManager {
 	}
 	
 	public static void input(Game game) {
-		glfwSetKeyCallback(game.getWindow().getContext(), WindowManager.input());
-		glfwSetCursorPosCallback(game.getWindow().getContext(), CameraManager.cameraTarget(game.getRenderer().getCamera()));
+		glfwSetKeyCallback(game.getWindow().getContext(), WindowManager.input(game.getWindow()));
+		glfwSetCursorPosCallback(game.getWindow().getContext(), CameraManager.cameraOrientation(game.getRenderer().getCamera()));
 	}
 	
 	public static void loop(Game game) {
@@ -111,6 +113,7 @@ public abstract class GameManager {
 			};
 		
 		Entity entity = new Entity(triangle, color);
+		entity.setPosition(new Vector3f(0, 0, 0));
 		
 		
 		RendererManager.enable(game.getRenderer(), entity);

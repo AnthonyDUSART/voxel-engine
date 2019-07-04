@@ -10,6 +10,7 @@ public class Window {
 	private int isResizable;
 	private int isFullscreen;
 	private long context;
+	private boolean isPaused;
 	
 	public Window(String title, int width, int height, int isResizable, int isFullscreen) {
 		this.title = title;
@@ -17,6 +18,7 @@ public class Window {
 		this.height = height;
 		this.isResizable = isResizable;
 		this.isFullscreen = isFullscreen;
+		this.isPaused = false;
 	}
 	
 	public boolean isCloseRequested() {
@@ -49,6 +51,14 @@ public class Window {
 	
 	public void setContext(long context) {
 		this.context = context;
+	}
+	
+	public boolean getIsPaused() {
+		return this.isPaused;
+	}
+	
+	public void setIsPaused(boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 	
 }

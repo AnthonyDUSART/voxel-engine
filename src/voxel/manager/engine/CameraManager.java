@@ -17,29 +17,40 @@ public abstract class CameraManager {
 		IntBuffer width = BufferUtils.createIntBuffer(4);
 		IntBuffer height = BufferUtils.createIntBuffer(4);
 		GLFW.glfwGetWindowSize(Main.getGame().getWindow().getContext(), width, height);
-		return new Matrix4f().perspective(camera.getFov(),(float) width.get()/height.get(), camera.getZNear(), camera.getZFar());
+		return new Matrix4f().perspective((float)Math.toRadians(camera.getFov()),(float) width.get()/height.get(), camera.getZNear(), camera.getZFar());
 	}
 	
 	public static Matrix4f createView(Camera camera) {
-		return new Matrix4f().lookAt(
-				camera.getPosition(), 
-				camera.getTarget(), 
-				new Vector3f(0, 1, 0)
-				);
+		
+		Matrix4f viewMatrix = new Matrix4f();
+		viewMatrix.identity();
+		viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getYaw()), new Vector3f(1, 0, 0), viewMatrix);
+		viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getPitch()), new Vector3f(0, 1, 0), viewMatrix);
+		viewMatrix.rotate((float) java.lang.Math.toRadians(0), new Vector3f(0, 0, 1), viewMatrix);
+		Vector3f cameraPos = camera.getPosition();
+		Vector3f negativeCameraPos = new Vector3f(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+		viewMatrix.translate(negativeCameraPos, viewMatrix);
+		return viewMatrix;
 	}
 	
-	public static GLFWCursorPosCallback cameraTarget(Camera camera) {
+	public static GLFWCursorPosCallback cameraOrientation(Camera camera) {
 		return new GLFWCursorPosCallback() {
 			
 			@Override
 			public void invoke(long arg0, double arg1, double arg2) {
-				camera.setTarget(
-						new Vector3f(
-								(float)Math.sin(arg1 * Camera.getTargetSpeed()), 
-								-(float)Math.cos(arg1 * Camera.getTargetSpeed()), 
-								0)
-						);
-				System.out.println(camera.getTarget());
+				if(!Main.getGame().getWindow().getIsPaused()) {
+					float w = Main.getGame().getWindow().getWidth()/2;
+					float h = Main.getGame().getWindow().getHeight()/2;
+					camera.increaseOrientation(
+							(float)(w - arg1), 
+							(float)(h - arg2)
+					);
+					GLFW.glfwSetCursorPos(
+							Main.getGame().getWindow().getContext(), 
+							w, 
+							h
+					);
+				}
 			}
 		};
 	}
