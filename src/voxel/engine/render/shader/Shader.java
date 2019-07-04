@@ -11,7 +11,7 @@ public abstract class Shader {
 		this.vertexShaderId = vertexShaderId;
 		this.fragmentShaderId = fragmentShaderId;
 	}
-	
+
 	public int getProgramId() {
 		return this.programId;
 	}

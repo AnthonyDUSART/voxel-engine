@@ -1,9 +1,9 @@
 #version 400 core
 
-in vec4 pass_position;
+in vec4 o_position;
 
-out vec4 color;
+out vec4 o_color;
 
 void main(void){
-	color = vec4(1, 1, 1, 0.4) * pass_position.xyzw;
+	o_color = vec4(1, 1, 1, 0.4) * o_position.xyzw;
 }
