@@ -1,6 +1,14 @@
 package voxel.manager.engine;
 
+import java.nio.IntBuffer;
+
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import voxel.engine.render.Camera;
 import voxel.main.Main;
@@ -8,21 +16,29 @@ import voxel.main.Main;
 public abstract class CameraManager {
 
 	public static Matrix4f createPerspectiveProjection(Camera camera) {
-		
-		float aspectRatio = Main.getGame().getWindow().getWidth() / Main.getGame().getWindow().getHeight();
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(camera.getFov() / 2f))) * aspectRatio);
-		float x_scale = y_scale / aspectRatio;
-		float frustum_lenght = camera.getZFar() - camera.getZNear();
-		
-		Matrix4f m = new Matrix4f();
-		m._m00(x_scale);
-		m._m11(y_scale);
-		m._m22(-((camera.getZFar() + camera.getZNear()) / frustum_lenght));
-		m._m23(-1);
-		m._m32(-((2 * camera.getZNear() * camera.getZFar()) / frustum_lenght));
-		m._m33(0);
-		
-		return m;
+		IntBuffer width = BufferUtils.createIntBuffer(4);
+		IntBuffer height = BufferUtils.createIntBuffer(4);
+		GLFW.glfwGetWindowSize(Main.getGame().getWindow().getContext(), width, height);
+		return new Matrix4f().perspective(camera.getFov(),(float) width.get()/height.get(), camera.getZNear(), camera.getZFar());
+	}
+	
+	public static Matrix4f createView(Camera camera) {
+		return new Matrix4f().lookAt(
+				camera.getPosition(), 
+				camera.getTarget(), 
+				new Vector3f(0, 1, 0)
+				);
+	}
+	
+	public static GLFWCursorPosCallback cameraTarget(Camera camera) {
+		return new GLFWCursorPosCallback() {
+			
+			@Override
+			public void invoke(long arg0, double arg1, double arg2) {
+				camera.setTarget(new Vector3f(-((float)arg1 * Camera.getTargetSpeed()), -((float)arg2 * Camera.getTargetSpeed()), 0));
+				System.out.println(camera.getTarget());
+			}
+		};
 	}
 	
 }

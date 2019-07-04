@@ -11,7 +11,7 @@ public class Game {
 	private Renderer renderer;
 
 	public Game() {
-		this.window = new Window("Voxel Engine", 1600, 900, GLFW.GLFW_TRUE, GLFW.GLFW_FALSE);
+		this.window = new Window("Voxel Engine", 1280, 920, GLFW.GLFW_TRUE, GLFW.GLFW_FALSE);
 	}
 	
 	public Window getWindow() {

@@ -1,7 +1,6 @@
 package voxel.manager.engine;
 
 import java.io.FileNotFoundException;
-import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -10,6 +9,7 @@ import org.lwjgl.opengl.GL20;
 
 import static org.lwjgl.opengl.GL20.*;
 
+import voxel.engine.render.shader.Shader;
 import voxel.engine.render.shader.StaticShader;
 import voxel.util.Loader;
 
@@ -64,17 +64,31 @@ public abstract class ShaderManager {
 
 		StaticShader shader = new StaticShader(programId, vertexShaderId, fragmentShaderId);
 		ShaderManager.setUniformsLocation(shader);
+		ShaderManager.bindAttributes(shader);
 		
 		return shader;
 	}
 	
+	private static void bindAttribute(Shader shader, int attribute, String variableName) {
+		glBindAttribLocation(shader.getProgramId(), attribute, variableName);
+	}
+	
+	private static void bindAttributes(StaticShader shader) {
+		ShaderManager.bindAttribute(shader, 0, "i_position");
+	}
+	
 	private static void setUniformsLocation(StaticShader shader) {
 		shader.setPerspectiveProjectionLocation(glGetUniformLocation(shader.getProgramId(), "u_projection"));
-		shader.setPerspectiveProjectionLocation(glGetUniformLocation(shader.getProgramId(), "u_transformation"));
+		System.out.println(glGetUniformLocation(shader.getProgramId(), "u_projection"));
+		shader.setTransformationLocation(glGetUniformLocation(shader.getProgramId(), "u_transformation"));
+		System.out.println(glGetUniformLocation(shader.getProgramId(), "u_transformation"));
+		shader.setViewLocation(glGetUniformLocation(shader.getProgramId(), "u_view"));
+		System.out.println(glGetUniformLocation(shader.getProgramId(), "u_view"));
 	}
 	
 	private static void loadMatrix4f(int location, Matrix4f m) {
-		glUniformMatrix4fv(location, false, m.get(BufferUtils.createFloatBuffer(16)));
+		m.get(Shader.getBuffer());
+		glUniformMatrix4fv(location, false, Shader.getBuffer());
 	}
 	
 	public static void loadPerspectiveProjection(StaticShader shader, Matrix4f m) {
@@ -83,5 +97,9 @@ public abstract class ShaderManager {
 	
 	public static void loadTransformation(StaticShader shader, Matrix4f m) {
 		ShaderManager.loadMatrix4f(shader.getTransformationLocation(), m);
+	}
+	
+	public static void loadView(StaticShader shader, Matrix4f m) {
+		ShaderManager.loadMatrix4f(shader.getViewLocation(), m);
 	}
 }

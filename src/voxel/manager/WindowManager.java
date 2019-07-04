@@ -34,6 +34,7 @@ public abstract class WindowManager {
 			IntBuffer pHeight = stack.mallocInt(1);
 
 			glfwGetWindowSize(context, pWidth, pHeight);
+//			glfwSetWindowAspectRatio(window.getContext(), 1200, 900);
 
 			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
@@ -46,10 +47,43 @@ public abstract class WindowManager {
 
 		glfwMakeContextCurrent(context);
 		glfwSwapInterval(1);
-
+		
+		// inputs
+		glfwSetInputMode(window.getContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetFramebufferSizeCallback(context, WindowManager.onResize());
+		
 		glfwShowWindow(context);
 		
 		return window.getContext();
+	}
+	
+	public static GLFWFramebufferSizeCallback onResize() {
+		return new GLFWFramebufferSizeCallback() {
+			
+			@Override
+			public void invoke(long arg0, int arg1, int arg2) {
+				GL11.glViewport(0, 0, arg1, arg2);
+			}
+		};
+	}
+	
+	public static GLFWKeyCallback input() {
+		
+		
+		return new GLFWKeyCallback() {
+			
+			@Override
+			public void invoke(long arg0, int arg1, int arg2, int arg3, int arg4) {
+				
+				if(arg1 == GLFW_KEY_ESCAPE && arg3 == GLFW_RELEASE) {
+					System.out.println("key callback " + arg0 + " " + GLFW_CURSOR + " " + GLFW_CURSOR_DISABLED);
+					if(glfwGetInputMode(arg0, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+					else
+						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				}
+			}
+		};
 	}
 	
 	public static void init() {
