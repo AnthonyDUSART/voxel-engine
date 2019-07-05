@@ -1,5 +1,6 @@
-package voxel.manager;
+package voxel.manager.gui;
 
+import voxel.gui.Cursor;
 import voxel.gui.Window;
 import org.lwjgl.glfw.*;
 import java.nio.IntBuffer;
@@ -49,6 +50,11 @@ public abstract class WindowManager {
 		glfwMakeContextCurrent(context);
 		glfwSwapInterval(1);
 		
+		// cursor
+		Cursor cursor = CursorManager.create();
+		window.setCursor(cursor);
+		glfwSetCursor(context, window.getCursor().getContext());
+		
 		
 		// inputs
 		
@@ -56,10 +62,11 @@ public abstract class WindowManager {
 		
 		glfwShowWindow(context);
 		
-		glfwSetCursorPos(context, window.getWidth()/2, window.getHeight()/2);
-		glfwSetInputMode(window.getContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		//glfwSetCursorPos(context, window.getWidth()/2, window.getHeight()/2);
+		CursorManager.setPosition(cursor, window.getWidth() / 2, window.getHeight() / 2);
+		glfwSetInputMode(context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		
-		return window.getContext();
+		return context;
 	}
 	
 	public static GLFWFramebufferSizeCallback onResize() {
@@ -72,35 +79,17 @@ public abstract class WindowManager {
 		};
 	}
 	
-	public static GLFWKeyCallback input(Window window) {
-		
-		
-		return new GLFWKeyCallback() {
-			
-			@Override
-			public void invoke(long arg0, int arg1, int arg2, int arg3, int arg4) {
-				
-				if(arg1 == GLFW_KEY_ESCAPE && arg3 == GLFW_RELEASE) {
-					System.out.println("key callback " + arg0 + " " + GLFW_CURSOR + " " + GLFW_CURSOR_DISABLED);
-					if(glfwGetInputMode(arg0, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
-						window.setIsPaused(true);
-						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-					}
-					else {
-						window.setIsPaused(false);
-						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-					}
-				}
-			}
-		};
-	}
-	
 	public static void init() {
 		GL11.glClearColor(0, 0, 0.2f, 0);
 	}
 	
 	public static void destroy(Window window) {
+		CursorManager.destroy(window.getCursor());
 		glfwDestroyWindow(window.getContext());
+	}
+	
+	public static long getCurrentContext() {
+		return glfwGetCurrentContext();
 	}
 	
 }

@@ -4,8 +4,9 @@ import voxel.entity.Entity;
 import voxel.game.Game;
 import voxel.manager.engine.CameraManager;
 import voxel.manager.engine.RendererManager;
+import voxel.manager.gui.CursorManager;
+import voxel.manager.gui.WindowManager;
 
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.opengl.*;
 
@@ -31,12 +32,9 @@ public abstract class GameManager {
 	
 	public static void input(Game game) {
 		glfwSetKeyCallback(game.getWindow().getContext(), GameManager.keyInputs(game));
+		glfwSetCursorPosCallback(game.getWindow().getContext(), CursorManager.cursorPosEvent(game.getWindow().getCursor()));
 		
-		// input moving
-		//glfwSetKeyCallback(game.getWindow().getContext(), CameraManager.input(game.getRenderer().getCamera()));
-		
-		// cursor moving
-		glfwSetCursorPosCallback(game.getWindow().getContext(), CameraManager.cameraOrientation(game.getRenderer().getCamera()));
+		CameraManager.input(game.getRenderer().getCamera());
 	}
 	
 	public static void loop(Game game) {
@@ -126,10 +124,12 @@ public abstract class GameManager {
 		RendererManager.enable(game.getRenderer(), entity);
 		WindowManager.init();
 		glLoadIdentity();
+		GameManager.input(game);
 		while (!game.getWindow().isCloseRequested()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			
+			CameraManager.input(game.getRenderer().getCamera());
 			entity.increaseRotation(0, 1, 0);
 			// render entity
 			RendererManager.render(game.getRenderer(), entity);
@@ -155,19 +155,9 @@ public abstract class GameManager {
 					else {
 						game.getWindow().setIsPaused(false);
 						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+						
 					}
 				}
-				
-				if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_W) == GLFW_PRESS)
-					game.getRenderer().getCamera().moveForward();
-				else if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_S) == GLFW_PRESS)
-					game.getRenderer().getCamera().moveBackward();
-				if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_A) == GLFW_PRESS)
-					game.getRenderer().getCamera().moveLeft();
-				else if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_D) == GLFW_PRESS)
-					game.getRenderer().getCamera().moveRight();
-				
-				
 			}
 		};
 	}

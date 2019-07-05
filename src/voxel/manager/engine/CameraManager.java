@@ -1,16 +1,23 @@
 package voxel.manager.engine;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.glfwGetKey;
+
 import java.nio.IntBuffer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 import voxel.engine.render.Camera;
+import voxel.gui.Window;
 import voxel.main.Main;
+import voxel.manager.gui.CursorManager;
 
 public abstract class CameraManager {
 
@@ -34,26 +41,32 @@ public abstract class CameraManager {
 		return viewMatrix;
 	}
 	
-	public static GLFWCursorPosCallback cameraOrientation(Camera camera) {
-		return new GLFWCursorPosCallback() {
+	public static void input(Camera camera) {
+		Window window = Main.getGame().getWindow();
+		long context = window.getContext();
+		
+		
+		if(!window.getIsPaused()) {
+			// camera direction
+			if(glfwGetKey(context, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(context, GLFW_KEY_S) != GLFW_PRESS)
+				camera.moveForward();
+			if(glfwGetKey(context, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(context, GLFW_KEY_W) != GLFW_PRESS)
+				camera.moveBackward();
+			if(glfwGetKey(context, GLFW_KEY_A) == GLFW_PRESS)
+				camera.moveLeft();
+			if(glfwGetKey(context, GLFW_KEY_D) == GLFW_PRESS)
+				camera.moveRight();
 			
-			@Override
-			public void invoke(long arg0, double arg1, double arg2) {
-				if(!Main.getGame().getWindow().getIsPaused()) {
-					float w = Main.getGame().getWindow().getWidth()/2;
-					float h = Main.getGame().getWindow().getHeight()/2;
-					camera.increaseOrientation(
-							(float)(w - arg1), 
-							(float)(h - arg2)
-					);
-					GLFW.glfwSetCursorPos(
-							Main.getGame().getWindow().getContext(), 
-							w, 
-							h
-					);
-				}
-			}
-		};
+			// camera orientation
+			float w = window.getWidth() / 2;
+			float h = window.getHeight() / 2;
+			
+			camera.increaseOrientation(
+					(float)(w - window.getCursor().getX()),
+					(float)(h - window.getCursor().getY())
+			);
+			CursorManager.setPosition(window.getCursor(), w, h);
+		}
 	}
 	
 }

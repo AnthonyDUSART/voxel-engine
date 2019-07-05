@@ -11,6 +11,7 @@ public class Window {
 	private int isFullscreen;
 	private long context;
 	private boolean isPaused;
+	private Cursor cursor;
 	
 	public Window(String title, int width, int height, int isResizable, int isFullscreen) {
 		this.title = title;
@@ -61,4 +62,11 @@ public class Window {
 		this.isPaused = isPaused;
 	}
 	
+	public Cursor getCursor() {
+		return this.cursor;
+	}
+	
+	public void setCursor(Cursor cursor) {
+		this.cursor = cursor;
+	}
 }

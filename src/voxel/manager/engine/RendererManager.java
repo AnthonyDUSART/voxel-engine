@@ -8,7 +8,6 @@ import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 
 import voxel.engine.render.Camera;
 import voxel.engine.render.Renderer;
