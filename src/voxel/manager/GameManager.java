@@ -5,6 +5,8 @@ import voxel.game.Game;
 import voxel.manager.engine.CameraManager;
 import voxel.manager.engine.RendererManager;
 
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.opengl.*;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -28,7 +30,12 @@ public abstract class GameManager {
 	}
 	
 	public static void input(Game game) {
-		glfwSetKeyCallback(game.getWindow().getContext(), WindowManager.input(game.getWindow()));
+		glfwSetKeyCallback(game.getWindow().getContext(), GameManager.keyInputs(game));
+		
+		// input moving
+		//glfwSetKeyCallback(game.getWindow().getContext(), CameraManager.input(game.getRenderer().getCamera()));
+		
+		// cursor moving
 		glfwSetCursorPosCallback(game.getWindow().getContext(), CameraManager.cameraOrientation(game.getRenderer().getCamera()));
 	}
 	
@@ -132,6 +139,37 @@ public abstract class GameManager {
 			glfwPollEvents();
 		}
 		RendererManager.disable(game.getRenderer());
+	}
+	
+	public static GLFWKeyCallback keyInputs(Game game) {
+		return new GLFWKeyCallback() {
+			
+			@Override
+			public void invoke(long arg0, int arg1, int arg2, int arg3, int arg4) {
+				if(arg1 == GLFW_KEY_ESCAPE && arg3 == GLFW_RELEASE) {
+					System.out.println("key callback " + arg0 + " " + GLFW_CURSOR + " " + GLFW_CURSOR_DISABLED);
+					if(glfwGetInputMode(arg0, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
+						game.getWindow().setIsPaused(true);
+						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+					}
+					else {
+						game.getWindow().setIsPaused(false);
+						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+					}
+				}
+				
+				if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_W) == GLFW_PRESS)
+					game.getRenderer().getCamera().moveForward();
+				else if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_S) == GLFW_PRESS)
+					game.getRenderer().getCamera().moveBackward();
+				if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_A) == GLFW_PRESS)
+					game.getRenderer().getCamera().moveLeft();
+				else if(glfwGetKey(game.getWindow().getContext(), GLFW_KEY_D) == GLFW_PRESS)
+					game.getRenderer().getCamera().moveRight();
+				
+				
+			}
+		};
 	}
 	
 }
