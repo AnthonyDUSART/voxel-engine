@@ -1,9 +1,11 @@
 package voxel.manager;
 
+import voxel.engine.render.model.Model;
 import voxel.entity.Entity;
 import voxel.game.Game;
 import voxel.gui.Cursor;
 import voxel.manager.engine.CameraManager;
+import voxel.manager.engine.ModelManager;
 import voxel.manager.engine.RendererManager;
 import voxel.manager.gui.CursorManager;
 import voxel.manager.gui.WindowManager;
@@ -38,44 +40,26 @@ public abstract class GameManager {
 	
 	public static void loop(Game game) {
 		
-		float[] triangle = {
-				-1.0f,-1.0f,-1.0f, // triangle 1 : begin
-			    -1.0f,-1.0f, 1.0f,
-			    -1.0f, 1.0f, 1.0f, // triangle 1 : end
-			    1.0f, 1.0f,-1.0f, // triangle 2 : begin
-			    -1.0f,-1.0f,-1.0f,
-			    -1.0f, 1.0f,-1.0f, // triangle 2 : end
-			    1.0f,-1.0f, 1.0f,
-			    -1.0f,-1.0f,-1.0f,
-			    1.0f,-1.0f,-1.0f,
-			    1.0f, 1.0f,-1.0f,
-			    1.0f,-1.0f,-1.0f,
-			    -1.0f,-1.0f,-1.0f,
-			    -1.0f,-1.0f,-1.0f,
-			    -1.0f, 1.0f, 1.0f,
-			    -1.0f, 1.0f,-1.0f,
-			    1.0f,-1.0f, 1.0f,
-			    -1.0f,-1.0f, 1.0f,
-			    -1.0f,-1.0f,-1.0f,
-			    -1.0f, 1.0f, 1.0f,
-			    -1.0f,-1.0f, 1.0f,
-			    1.0f,-1.0f, 1.0f,
-			    1.0f, 1.0f, 1.0f,
-			    1.0f,-1.0f,-1.0f,
-			    1.0f, 1.0f,-1.0f,
-			    1.0f,-1.0f,-1.0f,
-			    1.0f, 1.0f, 1.0f,
-			    1.0f,-1.0f, 1.0f,
-			    1.0f, 1.0f, 1.0f,
-			    1.0f, 1.0f,-1.0f,
-			    -1.0f, 1.0f,-1.0f,
-			    1.0f, 1.0f, 1.0f,
-			    -1.0f, 1.0f,-1.0f,
-			    -1.0f, 1.0f, 1.0f,
-			    1.0f, 1.0f, 1.0f,
-			    -1.0f, 1.0f, 1.0f,
-			    1.0f,-1.0f, 1.0f
-			};
+		float[] cubeVertices = {
+			1,		1,		1,
+			-1,		1,		1,
+			-1,		-1,		1,
+			1,		-1,		1,
+			1,		1,		-1,
+			-1,		1,		-1,
+			-1,		-1,		-1,
+			1,		-1,		-1
+			
+		};
+		
+		int[] cubeIndices = {
+				0, 1, 3, 3, 1, 2,
+			    1, 5, 2, 2, 5, 6,
+			    5, 4, 6, 6, 4, 7,
+			    4, 0, 7, 7, 0, 3,
+			    3, 2, 7, 7, 2, 6,
+			    4, 5, 0, 0, 5, 1
+		};
 		
 		float[] color = {
 				.583f,  0.771f,  0.014f,
@@ -116,14 +100,18 @@ public abstract class GameManager {
 			    0.982f,  0.099f,  0.879f
 			};
 		
-		Entity entity = new Entity(triangle, color);
+		Model model = ModelManager.create(game.getRenderer().getLoader(), cubeVertices, cubeIndices, color);
+		
+		Entity entity = new Entity(model, color);
+		Entity entity2 = new Entity(model, color);
 		entity.setPosition(new Vector3f(0, 0, 0));
+		entity2.setPosition(new Vector3f(4, 3, 1));
 		
-		
+		RendererManager.prepare();
 		RendererManager.enable(game.getRenderer(), entity);
 		WindowManager.init();
-		glLoadIdentity();
 		GameManager.input(game);
+		
 		while (!game.getWindow().isCloseRequested()) {
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
@@ -131,10 +119,11 @@ public abstract class GameManager {
 				entity.increaseRotation(0, 1, 0);
 				
 				RendererManager.render(game.getRenderer(), entity);
+				RendererManager.render(game.getRenderer(), entity2);
 				
 				WindowManager.update(game.getWindow());
 		}
-		RendererManager.disable(game.getRenderer());
+		WindowManager.destroy(game.getWindow());
 	}
 	
 	public static GLFWKeyCallback keyInputs(Game game) {

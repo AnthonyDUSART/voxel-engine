@@ -2,19 +2,21 @@ package voxel.entity;
 
 import org.joml.Vector3f;
 
+import voxel.engine.render.model.Model;
+
 public class Entity {
 	
-	private float[] vertices;
+	private Model model;
 	private float[] color;
 	private Vector3f position;
 	private Vector3f rotation;
 	
-	public Entity(float[] vertices, float[] color) {
-		this(vertices, color, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
+	public Entity(Model model, float[] color) {
+		this(model, color, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
 	}
 	
-	public Entity(float[] vertices, float[] color, Vector3f position, Vector3f rotation) {
-		this.vertices = vertices;
+	public Entity(Model model, float[] color, Vector3f position, Vector3f rotation) {
+		this.model = model;
 		this.color = color;
 		this.position = position;
 		this.rotation = rotation;
@@ -28,12 +30,12 @@ public class Entity {
 		return this.rotation.add(rx, ry, rz);
 	}
 	
-	public float[] getVertices() {
-		return this.vertices;
+	public Model getModel() {
+		return this.model;
 	}
 	
-	public void setVertices(float[] vertices) {
-		this.vertices = vertices;
+	public void setModel(Model model) {
+		this.model = model;
 	}
 	
 	public float[] getColor() {

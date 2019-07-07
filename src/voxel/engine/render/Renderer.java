@@ -9,10 +9,12 @@ public class Renderer {
 	
 	private Shader shader;
 	private Camera camera;
+	private Loader loader;
 	
-	public Renderer(Shader shader, Camera camera) {
+	public Renderer(Shader shader, Camera camera, Loader loader) {
 		this.shader = shader;
 		this.camera = camera;
+		this.loader = loader;
 	}
 	
 	public int getVbo() {
@@ -45,5 +47,13 @@ public class Renderer {
 	
 	public void setCamera(Camera camera) {
 		this.camera = camera;
+	}
+	
+	public Loader getLoader() {
+		return this.loader;
+	}
+	
+	public void setLoader(Loader loader) {
+		this.loader = loader;
 	}
 }

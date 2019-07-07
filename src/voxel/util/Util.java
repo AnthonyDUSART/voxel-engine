@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public abstract class Loader {
+public abstract class Util {
 	
 	public static final String RESSOURCES_PATH = "res/";
 
@@ -14,7 +14,7 @@ public abstract class Loader {
 		
 		String line;
 		StringBuilder result = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new FileReader(new File(Loader.RESSOURCES_PATH + path)));
+		BufferedReader reader = new BufferedReader(new FileReader(new File(Util.RESSOURCES_PATH + path)));
 		try {
 			
 			while((line = reader.readLine()) != null)

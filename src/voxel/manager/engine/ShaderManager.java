@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 import voxel.engine.render.shader.Shader;
 import voxel.engine.render.shader.StaticShader;
-import voxel.util.Loader;
+import voxel.util.Util;
 
 public abstract class ShaderManager {
 	
@@ -28,8 +28,8 @@ public abstract class ShaderManager {
 		int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 		int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 		try {
-			glShaderSource(vertexShaderId, Loader.getRessourceFile(SHADER_PATH + filename + ".vs"));
-			glShaderSource(fragmentShaderId, Loader.getRessourceFile(SHADER_PATH + filename + ".fs"));
+			glShaderSource(vertexShaderId, Util.getRessourceFile(SHADER_PATH + filename + ".vs"));
+			glShaderSource(fragmentShaderId, Util.getRessourceFile(SHADER_PATH + filename + ".fs"));
 		} catch (FileNotFoundException e) {
 			System.err.println("Impossible de trouver le shader: " + filename);
 			e.printStackTrace();
@@ -74,7 +74,7 @@ public abstract class ShaderManager {
 	
 	private static void bindAttributes(StaticShader shader) {
 		ShaderManager.bindAttribute(shader, 0, "i_position");
-		ShaderManager.bindAttribute(shader, 2, "i_color");
+		ShaderManager.bindAttribute(shader, 1, "i_color");
 	}
 	
 	private static void setUniformsLocation(StaticShader shader) {

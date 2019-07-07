@@ -1,15 +1,14 @@
 package voxel.manager.engine;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-
-import java.nio.FloatBuffer;
+import static org.lwjgl.opengl.GL30.*;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import voxel.engine.render.Camera;
+import voxel.engine.render.Loader;
 import voxel.engine.render.Renderer;
 import voxel.engine.render.shader.StaticShader;
 import voxel.entity.Entity;
@@ -19,8 +18,20 @@ public abstract class RendererManager {
 	public static Renderer create() {
 		return new Renderer(
 			ShaderManager.getStaticShader("static"),
-			new Camera(0.1f, 600.0f)
+			new Camera(0.1f, 600.0f),
+			new Loader()
 		);
+	}
+	
+	public static void prepare() {
+		glEnable(GL_DEPTH_TEST);
+		
+		// enable culling after normal consideration in shader
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+//		glCullFace(GL_FRONT_FACE);
+		glDepthFunc(GL_LESS);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public static void enable(Renderer renderer, Entity entity) {
@@ -32,26 +43,31 @@ public abstract class RendererManager {
 				CameraManager.createPerspectiveProjection(renderer.getCamera())
 			);
 		glUseProgram(0);
-		
-		
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_MODELVIEW);
-		glEnable(GL_BLEND);
-		glEnable(GL_CULL_FACE);
-		glDepthFunc(GL_LESS);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		renderer.setCbo(glGenBuffers());
-		glBindBuffer(GL_ARRAY_BUFFER, renderer.getCbo());
-		glBufferData(GL_ARRAY_BUFFER, entity.getColor(), GL_STATIC_DRAW);
-		
-		renderer.setVbo(glGenBuffers());
-		glBindBuffer(GL_ARRAY_BUFFER, renderer.getVbo());
-		glBufferData(GL_ARRAY_BUFFER, entity.getVertices(), GL_STATIC_DRAW);
+	}
+	
+	private static void bind(Entity entity) {
+		glBindVertexArray(entity.getModel().getVao());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+	}
+	
+	private static void unbind() {
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glBindVertexArray(0);
 	}
 	
 	public static void render(Renderer renderer, Entity entity) {
+		RendererManager.bind(entity);
 		glUseProgram(renderer.getShader().getProgramId());
+		RendererManager.prepare();
+		RendererManager.prepareInstance(renderer, entity);
+		glDrawElements(GL_TRIANGLES, entity.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+		glUseProgram(0);
+		RendererManager.unbind();
+	}
+	
+	private static void prepareInstance(Renderer renderer, Entity entity) {
 		ShaderManager.loadTransformation(
 				(StaticShader) renderer.getShader(), 
 				RendererManager.createTransformation(
@@ -61,25 +77,6 @@ public abstract class RendererManager {
 				)
 			);
 		ShaderManager.loadView((StaticShader) renderer.getShader(), CameraManager.createFpsView(renderer.getCamera()));
-		
-		
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		
-		glBindBuffer(GL_ARRAY_BUFFER, renderer.getVbo());
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, FloatBuffer.allocate(0));
-		
-		glBindBuffer(GL_ARRAY_BUFFER, renderer.getCbo());
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, FloatBuffer.allocate(0));
-		
-		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, 12*3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-		glUseProgram(0);
-	}
-	
-	public static void disable(Renderer renderer) {
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
 	}
 	
 	public static Matrix4f createTransformation(Vector3f translation, Vector3f rotation, float scale) {
@@ -93,5 +90,4 @@ public abstract class RendererManager {
 		m.scale(scale);
 		return m;
 	}
-
 }
