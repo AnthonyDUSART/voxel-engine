@@ -25,7 +25,7 @@ public class Camera {
 		this.zNear = zNear;
 		this.zFar = zFar;
 		this.fov = fov;
-		Camera.mouseSpeed = 0.08f;
+		Camera.mouseSpeed = 0.1f;
 		Camera.deplacementSpeed = 0.05f;
 	}
 	
@@ -34,47 +34,55 @@ public class Camera {
 	}
 	
 	public Vector2f increaseOrientation(float x, float y) {
-		this.pitch -= x * mouseSpeed;
-		this.yaw -= y * mouseSpeed;
+		this.pitch += y * mouseSpeed;
+		this.yaw += x * mouseSpeed;
 		
-		if(this.yaw > 90)
-			this.yaw = 90;
-		else if(this.yaw < -90)
-			this.yaw = -90;
+		if(this.pitch > 90)
+			this.pitch = 90;
+		else if(this.pitch < -90)
+			this.pitch = -90;
 		
 		return new Vector2f(this.pitch, this.yaw);
 	}
 	
 	public Vector3f moveForward() {
 		return this.increasePosition(
-				(float)(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.pitch))), 
+				-(float)(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.yaw))), 
 				0, 
-				(float)-(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.pitch)))
+				-(float)(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.yaw)))
 		);
 	}
 	
 	public Vector3f moveBackward() {
 		return this.increasePosition(
-				(float)-(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.pitch))), 
+				(float)(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.yaw))), 
 				0, 
-				(float)(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.pitch)))
+				(float)(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.yaw)))
 		);
 	}
 	
 	public Vector3f moveLeft() {
 		return this.increasePosition(
-				-(float)(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.pitch))),
+				-(float)(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.yaw))),
 				0,
-				-(float)(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.pitch)))
+				(float)(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.yaw)))
 		);
 	}
 	
 	public Vector3f moveRight() {
 		return this.increasePosition(
-				(float)(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.pitch))),
+				(float)(Camera.deplacementSpeed * Math.cos(Math.toRadians(this.yaw))),
 				0,
-				(float)(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.pitch)))
+				-(float)(Camera.deplacementSpeed * Math.sin(Math.toRadians(this.yaw)))
 		);
+	}
+	
+	public Vector3f moveUp() {
+		return this.increasePosition(0, Camera.deplacementSpeed, 0);
+	}
+	
+	public Vector3f moveDown() {
+		return this.increasePosition(0, -Camera.deplacementSpeed, 0);
 	}
 	
 	public Vector3f getPosition() {

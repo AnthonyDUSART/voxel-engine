@@ -1,5 +1,6 @@
 package voxel.gui;
 
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWImage;
 
 public class Cursor {
@@ -38,6 +39,15 @@ public class Cursor {
 	
 	public void setY(double y) {
 		this.y = y;
+	}
+	
+	public Vector2f getPosition() {
+		return new Vector2f((float)this.x, (float)this.y);
+	}
+	
+	public void setPosition(Vector2f position) {
+		this.x = position.x;
+		this.y = position.y;
 	}
 	
 	public GLFWImage getImage() {

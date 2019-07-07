@@ -19,7 +19,7 @@ public abstract class RendererManager {
 	public static Renderer create() {
 		return new Renderer(
 			ShaderManager.getStaticShader("static"),
-			new Camera(0.1f, 1000.0f)
+			new Camera(0.1f, 600.0f)
 		);
 	}
 	
@@ -37,6 +37,7 @@ public abstract class RendererManager {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_MODELVIEW);
 		glEnable(GL_BLEND);
+		glEnable(GL_CULL_FACE);
 		glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -59,11 +60,9 @@ public abstract class RendererManager {
 					1
 				)
 			);
+		ShaderManager.loadView((StaticShader) renderer.getShader(), CameraManager.createFpsView(renderer.getCamera()));
 		
-		ShaderManager.loadView((StaticShader) renderer.getShader(), CameraManager.createView(renderer.getCamera()));
 		
-		
-		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		
@@ -72,8 +71,6 @@ public abstract class RendererManager {
 		
 		glBindBuffer(GL_ARRAY_BUFFER, renderer.getCbo());
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, FloatBuffer.allocate(0));
-		
-		
 		
 		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, 12*3); // Starting from vertex 0; 3 vertices total -> 1 triangle

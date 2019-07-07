@@ -2,6 +2,7 @@ package voxel.manager;
 
 import voxel.entity.Entity;
 import voxel.game.Game;
+import voxel.gui.Cursor;
 import voxel.manager.engine.CameraManager;
 import voxel.manager.engine.RendererManager;
 import voxel.manager.gui.CursorManager;
@@ -33,8 +34,6 @@ public abstract class GameManager {
 	public static void input(Game game) {
 		glfwSetKeyCallback(game.getWindow().getContext(), GameManager.keyInputs(game));
 		glfwSetCursorPosCallback(game.getWindow().getContext(), CursorManager.cursorPosEvent(game.getWindow().getCursor()));
-		
-		CameraManager.input(game.getRenderer().getCamera());
 	}
 	
 	public static void loop(Game game) {
@@ -126,17 +125,14 @@ public abstract class GameManager {
 		glLoadIdentity();
 		GameManager.input(game);
 		while (!game.getWindow().isCloseRequested()) {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
-			
-			CameraManager.input(game.getRenderer().getCamera());
-			entity.increaseRotation(0, 1, 0);
-			// render entity
-			RendererManager.render(game.getRenderer(), entity);
-			
-			glfwSwapBuffers(game.getWindow().getContext());
-
-			glfwPollEvents();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				
+				CameraManager.input(game.getRenderer().getCamera());
+				entity.increaseRotation(0, 1, 0);
+				
+				RendererManager.render(game.getRenderer(), entity);
+				
+				WindowManager.update(game.getWindow());
 		}
 		RendererManager.disable(game.getRenderer());
 	}
@@ -151,11 +147,13 @@ public abstract class GameManager {
 					if(glfwGetInputMode(arg0, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
 						game.getWindow().setIsPaused(true);
 						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+						glfwSetCursorPos(arg0, game.getWindow().getWidth() / 2, game.getWindow().getHeight() / 2);
 					}
 					else {
 						game.getWindow().setIsPaused(false);
 						glfwSetInputMode(arg0, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-						
+						Cursor cursor = game.getWindow().getCursor();
+						glfwSetCursorPos(arg0, cursor.getX(), cursor.getY());
 					}
 				}
 			}

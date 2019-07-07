@@ -30,7 +30,6 @@ public abstract class CursorManager {
 		}
 		
 		ByteBuffer container = BufferUtils.createByteBuffer(pixels.length);
-		//container.put(pixels, 0, pixels.length);
 		container.put(pixels);
 		container.flip();
 		GLFWImage image = GLFWImage.malloc();
@@ -53,10 +52,14 @@ public abstract class CursorManager {
 			@Override
 			public void invoke(long arg0, double arg1, double arg2) {
 				if(!Main.getGame().getWindow().getIsPaused()) {
-					if(cursor.getX() != arg1)
+					if(cursor.getX() != arg1) {
 						cursor.setX((float)arg1);
-					if(cursor.getY() != arg2)
+					}
+						
+					if(cursor.getY() != arg2) {
 						cursor.setY((float)arg2);
+					}
+						
 				}
 			}
 		};
