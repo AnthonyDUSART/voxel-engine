@@ -21,5 +21,6 @@
 	<classpathentry kind="lib" path="lib/lwjgl-opengl/lwjgl-opengl-sources.jar"/>
 	<classpathentry kind="lib" path="lib/lwjgl-opengl/lwjgl-opengl.jar"/>
 	<classpathentry kind="lib" path="lib/joml-1.9.16.jar"/>
+	<classpathentry kind="lib" path="lib/pngdecoder-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

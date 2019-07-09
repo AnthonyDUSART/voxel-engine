@@ -1,11 +1,13 @@
 package voxel.manager;
 
 import voxel.engine.render.model.Model;
+import voxel.engine.render.model.Obj;
 import voxel.entity.Entity;
 import voxel.game.Game;
 import voxel.gui.Cursor;
 import voxel.manager.engine.CameraManager;
 import voxel.manager.engine.ModelManager;
+import voxel.manager.engine.ObjManager;
 import voxel.manager.engine.RendererManager;
 import voxel.manager.gui.CursorManager;
 import voxel.manager.gui.WindowManager;
@@ -31,6 +33,7 @@ public abstract class GameManager {
 		glClearColor(0, 0, 0, 1);
 		game.setRenderer(RendererManager.create());
 		GameManager.input(game);
+		
 	}
 	
 	public static void input(Game game) {
@@ -100,10 +103,14 @@ public abstract class GameManager {
 			    0.982f,  0.099f,  0.879f
 			};
 		
-		Model model = ModelManager.create(game.getRenderer().getLoader(), cubeVertices, cubeIndices, color);
+		// obj loader test
+		Obj obj = ObjManager.getObjFromFile2("block");
+		
+		Model model = ModelManager.create(game.getRenderer().getLoader(), obj.getVertices(), obj.getIndices(), color);
+		Model model2 = ModelManager.create(game.getRenderer().getLoader(), cubeVertices, cubeIndices, new float[] {0.5f, 1.0f, 0.5f});
 		
 		Entity entity = new Entity(model, color);
-		Entity entity2 = new Entity(model, color);
+		Entity entity2 = new Entity(model2, new float[] {0.0f, 1.0f, 0.5f});
 		entity.setPosition(new Vector3f(0, 0, 0));
 		entity2.setPosition(new Vector3f(4, 3, 1));
 		

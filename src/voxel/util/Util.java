@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 public abstract class Util {
 	
@@ -25,6 +26,21 @@ public abstract class Util {
 		}
 		
 		return result.toString();
+	}
+	
+	public static float[] floatListToArray(List<Float> list) {
+		float[] array = new float[list.size()];
+		for(int i = 0; i < array.length; i++)
+			array[i] = list.get(i);
+		return array;
+			
+	}
+	
+	public static int[] intListToArray(List<Integer> list) {
+		int[] array = new int[list.size()];
+		for(int i = 0; i < array.length; i++)
+			array[i] = list.get(i);
+		return array;
 	}
 	
 }
